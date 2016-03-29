@@ -3,6 +3,9 @@ import {
   Strategy as TwitterStrategy
 } from 'passport-twitter';
 
+var consumerKey = 'YWhfVLPloADYwOMH0EebIJZW6';
+var consumerSecret = "WLvtY4ijO224mjvCzZHqgZZfqvhvR1NhXQvTQ1cWPRIsRVLKFW";
+
 export function setup(User, config) {
   passport.use(new TwitterStrategy({
       // consumerKey: config.twitter.clientID,

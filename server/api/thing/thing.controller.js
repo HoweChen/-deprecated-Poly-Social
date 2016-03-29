@@ -11,6 +11,21 @@
 
 import _ from 'lodash';
 import Thing from './thing.model';
+// import User from '../user/user.model';
+// import Twitter_Info from '../../auth/twitter/passport';
+
+
+//require the package tiwtter
+var twitter = require('twitter');
+
+
+//set up the user's twitter token and token secret
+// var twitterClient = new twitter({
+//   consumer_key: 'YWhfVLPloADYwOMH0EebIJZW6',
+//   consumer_secret: 'WLvtY4ijO224mjvCzZHqgZZfqvhvR1NhXQvTQ1cWPRIsRVLKFW',
+//   access_token_key: '330958702-wnc1azXDPfkDJRsWWDGuovDQ7L6PZRpzNR3KqPsY',
+//   access_token_secret: 'E88aQcJkPLtgpVFEFitOtGA37u5oMm5SgLD3lHM0qZfRo'
+// });
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -90,13 +105,38 @@ export function show(req, res) {
     .catch(handleError(res));
 }
 
+
+
 // Creates a new Thing in the DB
+//
+// Original Version
 export function create(req, res) {
   req.body.user = req.user;
+  // twitterClient.post('statuses/update', {
+  //   status: req.body
+  // }, function(error, tweet, response) {
+  //   if(error) throw error;
+  //   console.log(tweet); // Tweet body.
+  //   console.log(response); // Raw response object.
+  // });
   return Thing.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
+//
+// get tweet Version
+// export function create(req, res) {
+//   req.body.user = req.user;
+//   twitterClient.post('statuses/update', {
+//     status: req.body
+//   }, function(error, tweet, response) {
+//     if(error) {
+//       throw error;
+//     }
+//     console.log(tweet); // Tweet body.
+//     console.log(response); // Raw response object.
+//   });
+// }
 
 // Updates an existing Thing in the DB
 export function update(req, res) {
@@ -115,7 +155,7 @@ export function destroy(req, res) {
 
   return Thing.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
-    .then(handleUnauthorized(res)) //check if the user is authorized before delete the thing
+    .then(handleUnauthorized(req, res)) //check if the user is authorized before delete the thing
     .then(removeEntity(res))
     .catch(handleError(res));
 }
