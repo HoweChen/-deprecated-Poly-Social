@@ -4,6 +4,7 @@ angular.module('polySocialApp', [
   'polySocialApp.auth',
   'polySocialApp.admin',
   'polySocialApp.constants',
+  // 'polySocialApp.fromNow',
   'ngCookies',
   'ngResource',
   'ngSanitize',

@@ -17,4 +17,10 @@ router.put('/:id', controller.update);
 router.patch('/:id', controller.update);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 
+
+//add star and delete star as favourite
+//
+router.put('/:id/star', auth.isAuthenticated(), controller.star);
+router.delete('/:id/star', auth.isAuthenticated(), controller.unstar);
+
 module.exports = router;

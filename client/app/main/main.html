@@ -26,12 +26,19 @@
         </h3>
         <div class="arrow_box col-xs-10">
           <button ng-if="isMyTweet(thing)" type="button" class="close" ng-click="$ctrl.deleteThing(thing)">&times;</button>
+          <button ng-if=" isMyStar(thing)" type="button" class="close" ng-click="unstarThing(thing)">
+            <span class="glyphicon glyphicon-star" style="color: #CF7C00;"></span>
+          </button>
+          <button ng-if="!isMyStar(thing)" type="button" class="close" ng-click="starThing(thing)">
+            <span class="glyphicon glyphicon-star-empty"></span>
+          </button>
           <h2 class="message">
             {{thing.name}}
           </h2>
-          <span style="float: right;">({{thing.createdAt}})</span>
+          <span style="float: right;">{{thing.createdAt}}</span>
         </div>
       </div>
+      <div ng-show='busy'>Loading data...</div>
     </div>
 
   </div>

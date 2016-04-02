@@ -10,6 +10,10 @@ var ThingSchema = new mongoose.Schema({
     type: mongoSchema.ObjectId,
     ref: 'User'
   },
+  stars: [{
+    type: mongoSchema.ObjectId,
+    ref: 'User'
+  }],
   // info: String,
   active: Boolean,
   timeline: Array

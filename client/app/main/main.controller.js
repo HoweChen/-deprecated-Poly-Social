@@ -23,6 +23,21 @@
         return Auth.isLoggedIn() && thing.stars && thing.stars.indexOf(Auth.getCurrentUser()._id) !== -1;
       };
 
+      $scope.starThing = function(thing) {
+        $http.put('/api/things/' + thing._id + '/star').success(function(newthing) {
+          $scope.awesomeThings[$scope.awesomeThings.indexOf(thing)] = newthing;
+        });
+      };
+      $scope.unstarThing = function(thing) {
+        $http.delete('/api/things/' + thing._id + '/star').success(function(newthing) {
+          $scope.awesomeThings[$scope.awesomeThings.indexOf(thing)] = newthing;
+        });
+      };
+      $scope.isMyStar = function(thing) {
+        return Auth.isLoggedIn() && thing.stars && thing.stars.indexOf(Auth.getCurrentUser()._id) !== -1;
+      };
+
+
       // $scope.isLoggedIn = this.auth.isLoggedIn;
       // $scope.getCurrentUser = this.auth.getCurrentUser;
       // $scope.isMyTweet = function(thing) {
@@ -63,13 +78,5 @@
       controller: MainController
     });
 
-  // angular.module('polySocialApp')
-  //   .controller('MainCtrl', function($scope, $http, socket, Auth) {
-  //     $scope.isLoggedIn = Auth.isLoggedIn;
-  //     $scope.getCurrentUser = Auth.getCurrentUser;
-  //     $scope.isMyTweet = function(thing) {
-  //       return Auth.isLoggedIn() && thing.user && thing.user._id === Auth.getCurrentUser()._id;
-  //     };
-  //   });
 
 })();
