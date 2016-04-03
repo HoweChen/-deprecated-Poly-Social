@@ -5,12 +5,17 @@
   class MainController {
 
     constructor($http, $scope, socket, Auth) {
+
       this.$http = $http;
       this.socket = socket;
       this.awesomeThings = [];
       $scope.isLoggedIn = Auth.isLoggedIn;
       $scope.isAdmin = Auth.isAdmin;
       $scope.getCurrentUser = Auth.getCurrentUser;
+      $scope.busy = true;
+      $scope.noMoreData = false;
+
+      // var keyword = $location.ion.search().keyword;
 
       $scope.$on('$destroy', function() {
         socket.unsyncUpdates('thing');
@@ -37,18 +42,41 @@
         return Auth.isLoggedIn() && thing.stars && thing.stars.indexOf(Auth.getCurrentUser()._id) !== -1;
       };
 
-
-      // $scope.isLoggedIn = this.auth.isLoggedIn;
-      // $scope.getCurrentUser = this.auth.getCurrentUser;
-      // $scope.isMyTweet = function(thing) {
-      //   return Auth.isLoggedIn() && thing.user && thing.user._id === Auth.getCurrentUser()._id;
-      // }
+      // $scope.nextPage = function() {
+      //   if($scope.busy) {
+      //     return;
+      //   }
+      //   $scope.busy = true;
+      //   var lastId = $scope.awesomeThings[$scope.awesomeThings.length - 1]._id;
+      //   var pageQuery = _.merge(query, {
+      //     _id: {
+      //       $lt: lastId
+      //     }
+      //   });
+      //   $http.get('/api/things', {
+      //     params: {
+      //       query: pageQuery
+      //     }
+      //   }).success(function(awesomeThings_) {
+      //     $scope.awesomeThings = $scope.awesomeThings.concat(awesomeThings_);
+      //     $scope.busy = false;
+      //     if(awesomeThings_.length === 0) {
+      //       $scope.noMoreData = true;
+      //     }
+      //   });
+      // };
     }
+
+
 
     $onInit() {
       this.$http.get('/api/things').then(response => {
         this.awesomeThings = response.data;
         this.socket.syncUpdates('thing', this.awesomeThings);
+        // if(this.awesomeThings.length < 20) {
+        //   this.noMoreData = true;
+        // }
+        // this.busy = false;
       });
     }
 
@@ -61,22 +89,22 @@
       }
     }
 
+
+
+
     deleteThing(thing) {
       this.$http.delete('/api/things/' + thing._id);
     }
 
-    // isMyTweet(thing) {
-    //   return this.auth.isLoggedIn() && thing.user && thing.user._id === this.auth.getCurrentUser()._id;
-    // }
 
 
   }
 
   angular.module('polySocialApp')
-    .component('main', {
-      templateUrl: 'app/main/main.html',
-      controller: MainController
-    });
+  .component('main', {
+    templateUrl: 'app/main/main.html',
+    controller: MainController
+  });
 
 
 })();

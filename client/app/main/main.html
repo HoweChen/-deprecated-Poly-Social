@@ -7,7 +7,7 @@
 </header>
 
 <body>
-  <div class="container">
+  <div class="container" infinite-scroll='nextPage()' infinite-scroll-disabled='busy || noMoreData'>
 
     <form class="thing-form">
       <!-- <label>Syncs in realtime across clients</label> -->
@@ -38,7 +38,7 @@
           <span style="float: right;">{{thing.createdAt}}</span>
         </div>
       </div>
-      <div ng-show='busy'>Loading data...</div>
+      <!-- <div ng-show='busy'>Loading data...</div> -->
     </div>
 
   </div>
