@@ -16,7 +16,9 @@ var ThingSchema = new mongoose.Schema({
   }],
   // info: String,
   active: Boolean,
-  timeline: Array
+  twitterTimeline:{
+    type: Object
+  }
 }, {
   timestamps: true
 });

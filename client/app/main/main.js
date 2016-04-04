@@ -4,9 +4,10 @@ angular.module('polySocialApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('main', {
-        url: '/?keyowrd',
+        url: '/',
         template: '<main></main>'
       });
+
 
 
   });
