@@ -16,25 +16,25 @@ var ThingSchema = new mongoose.Schema({
   }],
   // info: String,
   active: Boolean,
-  twitterTimeline:{
+  twitterTimeline: {
     type: Object
   }
 }, {
   timestamps: true
 });
 
-ThingSchema.index({
-  name: 'text'
-});
+// ThingSchema.index({
+//   name: 'text'
+// });
 
-ThingSchema.pre('find', function(next) {
-  this.populate('user', 'name');
-  next();
-});
-ThingSchema.pre('findOne', function(next) {
-  this.populate('user', 'name');
-  next();
-});
+// ThingSchema.pre('find', function(next) {
+//   this.populate('user', 'name');
+//   next();
+// });
+// ThingSchema.pre('findOne', function(next) {
+//   this.populate('user', 'name');
+//   next();
+// });
 
 
 

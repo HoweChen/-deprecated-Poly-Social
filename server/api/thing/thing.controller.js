@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 import Thing from './thing.model';
+import mongoose from 'mongoose';
 
 var Twitter = require('twitter');
 
@@ -25,7 +26,7 @@ var twitterClient = new Twitter({
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
-  return function(entity) {
+  return function (entity) {
     if (entity) {
       res.status(statusCode).json(entity);
     }
@@ -33,7 +34,7 @@ function respondWithResult(res, statusCode) {
 }
 
 function saveUpdates(updates) {
-  return function(entity) {
+  return function (entity) {
     var updated = _.merge(entity, updates);
     return updated.save()
       .then(updated => {
@@ -43,7 +44,7 @@ function saveUpdates(updates) {
 }
 
 function removeEntity(res) {
-  return function(entity) {
+  return function (entity) {
     if (entity) {
       return entity.remove()
         .then(() => {
@@ -54,7 +55,7 @@ function removeEntity(res) {
 }
 
 function handleEntityNotFound(res) {
-  return function(entity) {
+  return function (entity) {
     if (!entity) {
       res.status(404).end();
       return null;
@@ -65,14 +66,14 @@ function handleEntityNotFound(res) {
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return function(err) {
+  return function (err) {
     res.status(statusCode).send(err);
   };
 }
 
 //check if the user is authorized
 function handleUnauthorized(req, res) {
-  return function(entity) {
+  return function (entity) {
     if (!entity) {
       return null;
     }
@@ -82,6 +83,24 @@ function handleUnauthorized(req, res) {
     }
     return entity;
   }
+}
+
+//check if the tweet is inside the database
+function isFound(tweet) {
+  Thing.findOne({
+    'twitterTimeline.id_str': tweet.id_str
+  }, function (err, exist) {
+    if (exist && !err) {
+      return true;
+    } else {
+      var newTweet = new Thing();
+      newTweet.twitterTimeline = tweet;
+      newTweet.createdAt = tweet.created_at;
+      newTweet.save();
+      return false;
+    }
+  });
+  return false;
 }
 
 // Gets a list of Things
@@ -132,14 +151,14 @@ export function destroy(req, res) {
 }
 
 //star thing
-exports.star = function(req, res) {
+exports.star = function (req, res) {
   Thing.update({
     _id: req.params.id
   }, {
     $push: {
       stars: req.user._id
     }
-  }, function(err, num) {
+  }, function (err, num) {
     if (err) {
       return handleError(res)(err);
     }
@@ -151,14 +170,14 @@ exports.star = function(req, res) {
 };
 
 //unstar thing
-exports.unstar = function(req, res) {
+exports.unstar = function (req, res) {
   Thing.update({
     _id: req.params.id
   }, {
     $pull: {
       stars: req.user._id
     }
-  }, function(err, num) {
+  }, function (err, num) {
     if (err) {
       return handleError(res)(err);
     }
@@ -170,33 +189,29 @@ exports.unstar = function(req, res) {
 };
 
 
-export function postTweet(req, res) {
-  return twitterClient.post('statuses/update', {
-    status: 'I Love Twitter and meanjs'
-  }, function(error, tweet, response) {
-    if (error) throw error;
-    console.log(tweet); // Tweet body.
-    console.log(response); // Raw response object.
+export function postTweet(req, res, next) {
+  // console.log(req);
+  //post tweet
+  twitterClient.post('statuses/update', {
+    status: req.body.name
+  }, function (error, tweet, response) {
+    if (error) {
+      return handleError(res)(error).then(res.end());
+    }
   });
+  return next();
 }
 
 //get the tweet and store them in the database
-export function getTweet(req, res) {
+export function getTweet(req, res, next) {
   req.body.user = req.user;
-  // console.log(req);
-
   //get the tweet
-  twitterClient.get('statuses/home_timeline', function(error, tweets, response) {
-    if (error) return handleError(res)(error);
-    //else
-    //
+  twitterClient.get('statuses/home_timeline', function (error, tweets, response) {
+    if (error) return handleError(res)(error).then(res.end());
+    //else part
     for (var temp in tweets) {
-      var newTweet = new Thing();
-      newTweet.twitterTimeline = tweets[temp];
-      newTweet.createdAt = tweets[temp].created_at;
-      //   console.log(newTweet.createdAt + tweets[temp].created_at);
-      newTweet.save();
+      var flag = isFound(tweets[temp]);
     }
-
   });
+  return next();
 }
