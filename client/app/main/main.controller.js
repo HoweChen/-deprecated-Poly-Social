@@ -15,7 +15,14 @@
       $scope.busy = true;
       $scope.noMoreData = false;
 
-      // var keyword = $location.ion.search().keyword;
+      // $http.get('/api/things', {
+      //   params: {
+      //     query: query
+      //   }
+      // }).success(function (awesomeThings) {
+      //   $scope.awesomeThings = awesomeThings;
+      //   socket.syncUpdates('thing', $scope.awesomeThings);
+      // });
 
       $scope.$on('$destroy', function () {
         socket.unsyncUpdates('thing');
@@ -41,7 +48,11 @@
       $scope.isMyStar = function (thing) {
         return Auth.isLoggedIn() && thing.stars && thing.stars.indexOf(Auth.getCurrentUser()._id) !== -1;
       };
+
+
     }
+
+
 
 
 
@@ -70,6 +81,8 @@
 
 
 
+
+
   }
 
   angular.module('polySocialApp')
@@ -79,4 +92,42 @@
     });
 
 
+  // angular.module('polySocialAPP')
+  //   .config(function ($stateProvider) {
+  //     $stateProvider
+  //       .state('main', {
+  //         url: '/',
+  //         templateUrl: 'app/main/main.html',
+  //         controller: MainController,
+  //         resolve: {
+  //           query: function () {
+  //             return null;
+  //           }
+  //         },
+  //       })
+  //       .state('starred', {
+  //         url: '/users/:userId/starred',
+  //         templateUrl: 'app/main/main.html',
+  //         controller: MainController,
+  //         resolve: {
+  //           query: function ($stateParams) {
+  //             return {
+  //               stars: $stateParams.userId
+  //             };
+  //           }
+  //         }
+  //       })
+  //       .state('user', {
+  //         url: '/users/:userId',
+  //         templateUrl: 'app/main/main.html',
+  //         controller: MainController,
+  //         resolve: {
+  //           query: function ($stateParams) {
+  //             return {
+  //               user: $stateParams.userId
+  //             };
+  //           }
+  //         }
+  //       });
+  //   });
 })();

@@ -3,13 +3,18 @@
 class NavbarController {
   //start-non-standard
   menu = [{
-    'title': 'Home',
-    'state': 'main'
-    }, {
-    'title': 'Mine'
-    }, {
-    'title': 'Favourite'
-  }];
+      'title': 'Home',
+      'state': 'main'
+    },
+    {
+      'title': 'Mine',
+      'state': 'mine'
+    },
+    {
+      'title': 'Favourite',
+      'state': 'favourite'
+    }
+];
 
   isCollapsed = true;
   //end-non-standard
@@ -22,21 +27,22 @@ class NavbarController {
     this.isAdmin = Auth.isAdmin;
     this.getCurrentUser = Auth.getCurrentUser;
 
-    $scope.search = function (keyword) {
-      if ($state.current.controller === 'MainController') {
-        $state.go($state.current.name, {
-          keyword: keyword
-        }, {
-          reload: true
-        });
-      } else {
-        $state.go('main', {
-          keyword: keyword
-        }, {
-          reload: true
-        });
-      }
-    };
+    // $scope.search = function (keyword) {
+    //   if ($state.current.controller === 'MainController') {
+    //     $state.go($state.current.name, {
+    //       keyword: keyword
+    //     }, {
+    //       reload: true
+    //     });
+    //   } else {
+    //     $state.go('main', {
+    //       keyword: keyword
+    //     }, {
+    //       reload: true
+    //     });
+    //   }
+    // };
+
   }
 }
 
