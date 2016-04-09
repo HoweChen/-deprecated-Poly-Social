@@ -22,8 +22,8 @@
 
     <div ng-repeat="thing in $ctrl.awesomeThings" class="tweet">
       <div class="row">
-        <h4 class="col-xs-3" style="padding: 22px">
-            <a ng-href="http://www.twitter.com/{{thing.twitterTimeline.user.screen_name}}" target="_blank"><img src={{thing.twitterTimeline.user.profile_image_url}} alt="profile_image_url"/> @{{thing.twitterTimeline.user.name}}</a>
+        <h4 class="col-xs-3" style="padding-top: 50px;padding-bottom: 50px">
+          <a ng-href="http://www.twitter.com/{{thing.twitterTimeline.user.screen_name}}" target="_blank"><img src={{thing.twitterTimeline.user.profile_image_url}} alt="profile_image_url"/> @{{thing.twitterTimeline.user.name}}</a>
         </h4>
         <div class="arrow_box col-xs-9">
           <button ng-if="isMyTweet(thing)" type="button" class="close" ng-click="$ctrl.deleteThing(thing)">&times;</button>
@@ -33,11 +33,12 @@
           <button ng-if="!isMyStar(thing)" type="button" class="close" ng-click="starThing(thing)">
             <span class="glyphicon glyphicon-star-empty"></span>
           </button>
-          <h1 class="message">
+          <p class="message">
             {{thing.twitterTimeline.text}}
             <!-- {{thing.name}} -->
-        </h1>
-          <span style="float: right;">via <a ng-href="http://www.twitter.com/{{thing.twitterTimeline.user.screen_name}}/status/{{thing.twitterTimeline.id_str}}" target="_blank">Twitter</a> on {{thing.twitterTimeline.created_at}}</span>
+          </p>
+          <span style="float: right;padding-top:30px;">via <a ng-href="http://www.twitter.com/{{thing.twitterTimeline.user.screen_name}}/status/{{thing.twitterTimeline.id_str}}" target="_blank">Twitter</a> on {{thing.twitterTimeline.created_at}}
+          </span>
         </div>
       </div>
       <!-- <div ng-show='busy'>Loading data...</div> -->

@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('polySocialApp')
-  .config(function($stateProvider) {
+  .config(function ($stateProvider) {
     $stateProvider
       .state('main', {
-        url: '/',
+        url: '/?keyword',
         template: '<main></main>'
       });
 

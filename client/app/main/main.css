@@ -30,7 +30,9 @@
   border: 1px solid #cccccc;
   border-radius: 4px;
   margin-top: 15px;
-  margin-bottom: 20px
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .arrow_box:after, .arrow_box:before {
   right: 100%;
@@ -45,14 +47,14 @@
 .arrow_box:after {
   border-color: rgba(225, 225, 225, 0);
   border-right-color: #ffffff;
-  border-width: 30px;
-  margin-top: -30px;
+  border-width: 0px;
+  margin-top: 0px;
 }
 .arrow_box:before {
   border-color: rgba(255, 255, 255, 0);
   border-right-color: #cccccc;
-  border-width: 31px;
-  margin-top: -31px;
+  border-width: 0px;
+  margin-top: 0px;
 }
 .tweet {
   margin: 5px;

@@ -6,8 +6,8 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/', auth.isAuthenticated(), controller.getTweet, controller.index);
-router.post('/', auth.isAuthenticated(), controller.postTweet, controller.getTweet, controller.index);
+router.get('/', auth.isAuthenticated(), controller.index);
+router.post('/', auth.isAuthenticated(), controller.postTweet);
 router.put('/:id', controller.update);
 router.patch('/:id', controller.update);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);

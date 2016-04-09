@@ -95,7 +95,7 @@ function isFound(tweet) {
     } else {
       var newTweet = new Thing();
       newTweet.twitterTimeline = tweet;
-      newTweet.createdAt = tweet.created_at;
+      //   newTweet.createdAt = tweet.created_at;
       newTweet.save();
       return false;
     }
@@ -103,8 +103,32 @@ function isFound(tweet) {
   return false;
 }
 
+//get the tweet and store them in the database
+function getTweet(req) {
+  req.body.user = req.user;
+  // twitterClient.access_token_key = req.user.twitter.token;
+  // twitterClient.access_token_secret = req.user.twitter.tokenSecret;
+
+  var param = {
+    user_id: req.user.twitter.id_str,
+    count: 200
+  };
+
+  //get the tweet
+  twitterClient.get('statuses/home_timeline', param, function (error, tweets, response) {
+    if (error) console.log(error);
+    //else part
+    for (var temp = tweets.length - 1; temp >= 0; --temp) {
+      var flag = isFound(tweets[temp]);
+    }
+  });
+}
+
 // Gets a list of Things
 export function index(req, res) {
+
+  getTweet(req);
+
   return Thing.find().sort({
       createdAt: -1
     }).exec()
@@ -197,20 +221,6 @@ export function postTweet(req, res, next) {
   }, function (error, tweet, response) {
     if (error) {
       return handleError(res)(error).then(res.end());
-    }
-  });
-  return next();
-}
-
-//get the tweet and store them in the database
-export function getTweet(req, res, next) {
-  req.body.user = req.user;
-  //get the tweet
-  twitterClient.get('statuses/home_timeline', function (error, tweets, response) {
-    if (error) return handleError(res)(error).then(res.end());
-    //else part
-    for (var temp in tweets) {
-      var flag = isFound(tweets[temp]);
     }
   });
   return next();
