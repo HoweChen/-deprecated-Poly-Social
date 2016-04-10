@@ -103,31 +103,10 @@ function isFound(tweet) {
   return false;
 }
 
-//get the tweet and store them in the database
-function getTweet(req) {
-  req.body.user = req.user;
-  // twitterClient.access_token_key = req.user.twitter.token;
-  // twitterClient.access_token_secret = req.user.twitter.tokenSecret;
-
-  var param = {
-    user_id: req.user.twitter.id_str,
-    count: 200
-  };
-
-  //get the tweet
-  twitterClient.get('statuses/home_timeline', param, function (error, tweets, response) {
-    if (error) console.log(error);
-    //else part
-    for (var temp = tweets.length - 1; temp >= 0; --temp) {
-      var flag = isFound(tweets[temp]);
-    }
-  });
-}
-
 // Gets a list of Things
 export function index(req, res) {
 
-  getTweet(req);
+  // getTweet(req);
 
   return Thing.find().sort({
       createdAt: -1
@@ -212,8 +191,8 @@ exports.unstar = function (req, res) {
   });
 };
 
-
-export function postTweet(req, res, next) {
+//postTweet
+export function postTweet(req, res) {
   // console.log(req);
   //post tweet
   twitterClient.post('statuses/update', {
@@ -223,5 +202,31 @@ export function postTweet(req, res, next) {
       return handleError(res)(error).then(res.end());
     }
   });
-  return next();
+  return getTweet(req, res);
+
+}
+
+
+//getTweet
+export function getTweet(req, res) {
+  req.body.user = req.user;
+  // twitterClient.access_token_key = req.user.twitter.token;
+  // twitterClient.access_token_secret = req.user.twitter.tokenSecret;
+
+  var param = {
+    user_id: req.user.twitter.id_str,
+    count: 200
+  };
+
+
+  //get the tweet
+  twitterClient.get('statuses/home_timeline', param, function (error, tweets, response) {
+    if (error) console.log(error);
+    //else part
+    for (var temp = tweets.length - 1; temp >= 0; --temp) {
+      var flag = isFound(tweets[temp]);
+    }
+  });
+
+  return index(req, res);
 }
