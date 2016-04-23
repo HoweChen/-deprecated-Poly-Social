@@ -14,7 +14,7 @@ class NavbarController {
       'title': 'Favourite',
       'state': 'favourite'
     }
-];
+  ];
 
   isCollapsed = true;
   //end-non-standard
@@ -22,27 +22,21 @@ class NavbarController {
 
 
 
-  constructor($state, $scope, Auth) {
+
+  constructor($http, $state, $scope, socket, Auth) {
     this.isLoggedIn = Auth.isLoggedIn;
     this.isAdmin = Auth.isAdmin;
     this.getCurrentUser = Auth.getCurrentUser;
 
-    // $scope.search = function (keyword) {
-    //   if ($state.current.controller === 'MainController') {
-    //     $state.go($state.current.name, {
-    //       keyword: keyword
-    //     }, {
-    //       reload: true
-    //     });
-    //   } else {
-    //     $state.go('main', {
-    //       keyword: keyword
-    //     }, {
-    //       reload: true
-    //     });
-    //   }
-    // };
-
+    $scope.search = function (keyword) {
+      var keywordTemp = encodeURIComponent(keyword);
+      // console.log(keywordTemp);
+      $state.go('main', {
+        keyword: keywordTemp
+      }, {
+        reload: true
+      });
+    };
   }
 }
 

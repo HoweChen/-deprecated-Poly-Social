@@ -105,22 +105,45 @@ function isFound(tweet) {
 
 // Gets a list of Things
 export function index(req, res) {
+  var keyword = decodeURIComponent(req.query.keyword);
+  if (keyword !== undefined) {
+    //with keyword
+    return Thing.find({
+        $or: [{
+          'twitterTimeline.user.name': keyword
+        }, {
+          'twitterTimeline.text': {
+            $regex: keyword
+          }
+        }]
+      }).sort({
+        createdAt: 1
+      }).exec()
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  } else {
+    //without keyword
+    return Thing.find().sort({
+        createdAt: -1
+      }).exec()
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  }
 
-  // getTweet(req);
-
-  return Thing.find().sort({
-      createdAt: -1
-    }).exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
 }
+
+// export function indexKeyword(req, res) {
+//   console.log(req.params);
+//   console.log(req.query.keyword);
+//   console.log("Fuck you");
+// }
 
 // Gets a single Thing from the DB
 export function show(req, res) {
-  return Thing.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+  // return Thing.findById(req.params.id).exec()
+  //   .then(handleEntityNotFound(res))
+  //   .then(respondWithResult(res))
+  //   .catch(handleError(res));
 }
 
 // Creates a new Thing in the DB
@@ -219,9 +242,19 @@ export function getTweet(req, res) {
   };
 
 
+  Thing.find().sort({
+    createdAt: -1
+  }).exec()
+
+
   //get the tweet
   twitterClient.get('statuses/home_timeline', param, function (error, tweets, response) {
-    if (error) console.log(error);
+    if (error) {
+      console.log(error);
+      res.render('error', {
+        status: 500
+      });
+    }
     //else part
     for (var temp = tweets.length - 1; temp >= 0; --temp) {
       var flag = isFound(tweets[temp]);

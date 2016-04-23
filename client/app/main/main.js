@@ -2,14 +2,20 @@
 
 angular.module('polySocialApp')
   .config(function ($stateProvider) {
+
     $stateProvider
       .state('main', {
-        url: '/',
-        template: '<main></main>'
+        url: '/?keyword',
+        template: '<main></main>',
+        resolve: {
+          query: function () {
+            return null;
+          }
+        }
       })
       .state('favourite', {
-        url: '/users/:userId/favourite',
-        template: '<favourite></favourite>',
+        url: '/users/:userID/favourite?keyword',
+        template: '<main></main>',
         resolve: {
           query: function ($stateParams) {
             return {
@@ -19,8 +25,8 @@ angular.module('polySocialApp')
         }
       })
       .state('mine', {
-        url: '/users/:userId',
-        template: '<mine></mine>',
+        url: '/users/:userID?keyword',
+        template: '<main></main>',
         resolve: {
           query: function ($stateParams) {
             return {

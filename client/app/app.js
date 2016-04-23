@@ -10,11 +10,9 @@ angular.module('polySocialApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'validation.match',
-  'infinite-scroll'
-  // 'polySocialApp.fromNow'
+  'validation.match'
 ])
-  .config(function($urlRouterProvider, $locationProvider) {
+  .config(function ($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
       .otherwise('/');
 
