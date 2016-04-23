@@ -238,7 +238,7 @@ export function getTweet(req, res) {
 
   var param = {
     user_id: req.user.twitter.id_str,
-    count: 200
+    count: 100
   };
 
 
