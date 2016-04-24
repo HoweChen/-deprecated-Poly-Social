@@ -13,7 +13,11 @@ import _ from 'lodash';
 import Thing from './thing.model';
 import mongoose from 'mongoose';
 
+var fs = require('fs');
 var Twitter = require('twitter');
+var Weibo = require('nodeweibo');
+var weiboSetting = require('../../auth/weibo/weiboSetting.json');
+
 
 //set up the user's twitter token and token secret
 var twitterClient = new Twitter({
@@ -22,6 +26,8 @@ var twitterClient = new Twitter({
   access_token_key: '330958702-wnc1azXDPfkDJRsWWDGuovDQ7L6PZRpzNR3KqPsY',
   access_token_secret: 'E88aQcJkPLtgpVFEFitOtGA37u5oMm5SgLD3lHM0qZfRo'
 });
+
+var weiboAccessToekn;
 
 
 function respondWithResult(res, statusCode) {
@@ -88,14 +94,16 @@ function handleUnauthorized(req, res) {
 //check if the tweet is inside the database
 function isFound(tweet) {
   Thing.findOne({
-    'twitterTimeline.id_str': tweet.id_str
+    'timeline.id_str': tweet.id_str
   }, function (err, exist) {
     if (exist && !err) {
       return true;
     } else {
       var newTweet = new Thing();
-      newTweet.twitterTimeline = tweet;
+      newTweet.timeline = tweet;
       //   newTweet.createdAt = tweet.created_at;
+      newTweet.timeline.timelineType = 'Twitter';
+      newTweet.timeline.userAvatar = tweet.user.profile_image_url;
       newTweet.save();
       return false;
     }
@@ -132,25 +140,74 @@ export function getTweet(req, res, next) {
   // return index(req, res);
 }
 
+//Gets weibo
+export function getWeibo(req, res, next) {
+  // 2.00qjRJUB0XENDz1091a55011oViX1E
+  Weibo.init(weiboSetting);
+  //
+  // Weibo.authorize();
+  // var jsonParas = {
+  //   // client_id: weiboSetting.appKey,
+  //   // client_secret: weiboSetting.appSecret,
+  //   code: '31d551d64820e8e83f35ad8e1fdc91fe',
+  //   grant_type: 'authorization_code'
+  // };
+  //
+  // Weibo.OAuth2.access_token(jsonParas, function (data) {
+  //   // weiboSetting.access_token = data.access_token;
+  //   console.log(data);
+  //   console.log(data.access_token);
+  // });
+  // console.log(weiboAccessToekn);
+
+  // set parameters
+  var para = {
+    "source": Weibo.appKey.appKey,
+    "access_token": '2.00qjRJUB0XENDz1091a55011oViX1E',
+    "count": 100
+  };
+
+  // get public timeline
+  Weibo.Statuses.home_timeline(para, function (data) {
+    for (var temp = data.statuses.length - 1; temp >= 0; --temp) {
+      var newWeibo = new Thing();
+      newWeibo.timeline = data.statuses[temp];
+      //   newTweet.createdAt = tweet.created_at;
+      newWeibo.timeline.timelineType = 'Sina Weibo';
+      newWeibo.timeline.userAvatar = data.statuses[temp].user.profile_image_url;
+      newWeibo.save();
+    }
+  });
+
+  //test for the time_limit
+  // var limitPara = {
+  //   "access_token": '2.00qjRJUB0XENDz1091a55011oViX1E'
+  // }
+  // Weibo.Account.rate_limit_status(limitPara, function (data) {
+  //   console.log(data);
+  // });
+  next();
+}
+
 // Gets a list of Things
 export function index(req, res) {
 
   var keyword = decodeURIComponent(req.query.keyword);
-  console.log(keyword);
+  // console.log(keyword);
 
   return Thing.find({
       $or: [{
-        'twitterTimeline.user.name': {
+        'timeline.user.name': {
           $regex: keyword,
           $options: 'i'
         }
         }, {
-        'twitterTimeline.text': {
+        'timeline.text': {
           $regex: keyword
         }
         }]
     }).sort({
-      createdAt: 1
+      'timeline.created_at': 1
     }).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))

@@ -16,7 +16,7 @@ var ThingSchema = new mongoose.Schema({
   }],
   // info: String,
   active: Boolean,
-  twitterTimeline: {
+  timeline: {
     type: Object
   }
 }, {

@@ -23,21 +23,32 @@
     <div ng-repeat="thing in $ctrl.awesomeThings" class="tweet">
       <div class="row">
         <h4 class="col-xs-3" style="padding-top: 50px;padding-bottom: 50px">
-          <a ng-href="http://www.twitter.com/{{thing.twitterTimeline.user.screen_name}}" target="_blank"><img src={{thing.twitterTimeline.user.profile_image_url}} alt="profile_image_url"/> @{{thing.twitterTimeline.user.name}}</a>
+          <a ng-if= "thing.timeline.timelineType =='Twitter'" ng-href="http://www.twitter.com/{{thing.timeline.user.screen_name}}" target="_blank">
+            <img src={{thing.timeline.userAvatar}} alt="userAvatar" height="48" width="48"> @{{thing.timeline.user.name}}
+          </a>
+          <a ng-if= "thing.timeline.timelineType =='Sina Weibo'" ng-href="http://www.weibo.com/{{thing.timeline.user.profile_url}}" target="_blank">
+            <img src={{thing.timeline.userAvatar}} alt="userAvatar" height="48" width="48"> @{{thing.timeline.user.name}}
+          </a>
         </h4>
         <div class="arrow_box col-xs-9">
-          <button ng-if="isMyTweet(thing)" type="button" class="close" ng-click="$ctrl.deleteThing(thing)">&times;</button>
-          <button ng-if=" isMyStar(thing)" type="button" class="close" ng-click="$ctrl.unstarThing(thing)">
+          <!-- <button ng-if="isMyTweet(thing)" type="button" class="close" ng-click="$ctrl.deleteThing(thing)">&times;</button>
+          <button ng-if="isMyStar(thing)" type="button" class="close" ng-click="$ctrl.unstarThing(thing)">
             <span class="glyphicon glyphicon-star" style="color: #CF7C00;"></span>
           </button>
           <button ng-if="!isMyStar(thing)" type="button" class="close" ng-click="$ctrl.starThing(thing)">
             <span class="glyphicon glyphicon-star-empty"></span>
-          </button>
+          </button> -->
           <p class="message">
-            {{thing.twitterTimeline.text}}
+            {{thing.timeline.text}}
             <!-- {{thing.name}} -->
           </p>
-          <span style="float: right;padding-top:30px;">via <a ng-href="http://www.twitter.com/{{thing.twitterTimeline.user.screen_name}}/status/{{thing.twitterTimeline.id_str}}" target="_blank">Twitter</a> on {{thing.twitterTimeline.created_at}}
+          <span style="float: right;padding-top:30px;">
+            via
+            <a ng-if="thing.timeline.timelineType == 'Twitter'" ng-href="http://www.twitter.com/{{thing.timeline.user.screen_name}}/status/{{thing.timeline.id_str}}" target="_blank">{{thing.timeline.timelineType}}
+            </a>
+            <a ng-if="thing.timeline.timelineType == 'Sina Weibo'" ng-href="http://www.twitter.com/{{thing.timeline.user.screen_name}}/status/{{thing.timeline.id_str}}" target="_blank">{{thing.timeline.timelineType}}
+            </a>
+            on {{thing.timeline.created_at}}
           </span>
         </div>
       </div>

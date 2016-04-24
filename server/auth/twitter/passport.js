@@ -14,7 +14,7 @@ export function setup(User, config) {
       consumerSecret: 'WLvtY4ijO224mjvCzZHqgZZfqvhvR1NhXQvTQ1cWPRIsRVLKFW',
       callbackURL: config.twitter.callbackURL
     },
-    function(token, tokenSecret, profile, done) {
+    function (token, tokenSecret, profile, done) {
       var providerData = profile._json;
       providerData.token = token;
       providerData.tokenSecret = tokenSecret;
@@ -23,7 +23,7 @@ export function setup(User, config) {
           'twitter.id': profile.id
         }).exec()
         .then(user => {
-          if(user) {
+          if (user) {
             return done(null, user);
           }
 
