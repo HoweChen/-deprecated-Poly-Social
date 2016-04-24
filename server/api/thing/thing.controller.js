@@ -110,7 +110,10 @@ export function index(req, res) {
     //with keyword
     return Thing.find({
         $or: [{
-          'twitterTimeline.user.name': keyword
+          'twitterTimeline.user.name': {
+            $regex: keyword,
+            $options: 'i'
+          }
         }, {
           'twitterTimeline.text': {
             $regex: keyword
