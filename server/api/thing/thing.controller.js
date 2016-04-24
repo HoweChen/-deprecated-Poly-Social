@@ -103,43 +103,60 @@ function isFound(tweet) {
   return false;
 }
 
-// Gets a list of Things
-export function index(req, res) {
-  var keyword = decodeURIComponent(req.query.keyword);
-  if (keyword !== undefined) {
-    //with keyword
-    return Thing.find({
-        $or: [{
-          'twitterTimeline.user.name': {
-            $regex: keyword,
-            $options: 'i'
-          }
-        }, {
-          'twitterTimeline.text': {
-            $regex: keyword
-          }
-        }]
-      }).sort({
-        createdAt: 1
-      }).exec()
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  } else {
-    //without keyword
-    return Thing.find().sort({
-        createdAt: -1
-      }).exec()
-      .then(respondWithResult(res))
-      .catch(handleError(res));
-  }
 
+//getTweet
+export function getTweet(req, res, next) {
+  req.body.user = req.user;
+  // twitterClient.access_token_key = req.user.twitter.token;
+  // twitterClient.access_token_secret = req.user.twitter.tokenSecret;
+
+  var param = {
+    user_id: req.user.twitter.id_str,
+    count: 100
+  };
+
+  //get the tweet
+  twitterClient.get('statuses/home_timeline', param, function (error, tweets, response) {
+    if (error) {
+      console.log(error);
+      // res.render('error', {
+      //   status: 500
+      // });
+    } else {
+      for (var temp = tweets.length - 1; temp >= 0; --temp) {
+        var flag = isFound(tweets[temp]);
+      }
+    }
+  });
+  next();
+  // return index(req, res);
 }
 
-// export function indexKeyword(req, res) {
-//   console.log(req.params);
-//   console.log(req.query.keyword);
-//   console.log("Fuck you");
-// }
+// Gets a list of Things
+export function index(req, res) {
+
+  var keyword = decodeURIComponent(req.query.keyword);
+  console.log(keyword);
+
+  return Thing.find({
+      $or: [{
+        'twitterTimeline.user.name': {
+          $regex: keyword,
+          $options: 'i'
+        }
+        }, {
+        'twitterTimeline.text': {
+          $regex: keyword
+        }
+        }]
+    }).sort({
+      createdAt: 1
+    }).exec()
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+
+}
 
 // Gets a single Thing from the DB
 export function show(req, res) {
@@ -230,39 +247,4 @@ export function postTweet(req, res) {
   });
   return getTweet(req, res);
 
-}
-
-
-//getTweet
-export function getTweet(req, res) {
-  req.body.user = req.user;
-  // twitterClient.access_token_key = req.user.twitter.token;
-  // twitterClient.access_token_secret = req.user.twitter.tokenSecret;
-
-  var param = {
-    user_id: req.user.twitter.id_str,
-    count: 100
-  };
-
-
-  Thing.find().sort({
-    createdAt: -1
-  }).exec()
-
-
-  //get the tweet
-  twitterClient.get('statuses/home_timeline', param, function (error, tweets, response) {
-    if (error) {
-      console.log(error);
-      res.render('error', {
-        status: 500
-      });
-    }
-    //else part
-    for (var temp = tweets.length - 1; temp >= 0; --temp) {
-      var flag = isFound(tweets[temp]);
-    }
-  });
-
-  return index(req, res);
 }
