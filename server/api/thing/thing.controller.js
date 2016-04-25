@@ -200,11 +200,11 @@ export function index(req, res) {
           $regex: keyword,
           $options: 'i'
         }
-        }, {
+      }, {
         'timeline.text': {
           $regex: keyword
         }
-        }]
+      }]
     }).sort({
       'timeline.created_at': 1
     }).exec()
@@ -315,7 +315,7 @@ export function postWeibo(req, res, next) {
 
   Weibo.Statuses.update(para, function (data) {
     var newWeibo = new Thing();
-    newWeibo.timeline = data.text;
+    newWeibo.timeline = data;
     //   newTweet.createdAt = tweet.created_at;
     newWeibo.timeline.timelineType = 'Sina Weibo';
     newWeibo.timeline.userAvatar = data.user.profile_image_url;
