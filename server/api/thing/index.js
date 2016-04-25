@@ -10,7 +10,7 @@ router.get('/', auth.isAuthenticated(), controller.getTweet, controller.getWeibo
 // router.get('/', controller.getWeibo);
 // router.get('/api/things/?keyword', auth.isAuthenticated(), controller.indexKeyword);
 // router.get('/:id', controller.show);
-router.post('/', auth.isAuthenticated(), controller.postTweet);
+router.post('/', auth.isAuthenticated(), controller.postTweet, controller.postWeibo, controller.index);
 // router.put('/:id', controller.update);
 // router.patch('/:id', controller.update);
 // router.delete('/:id', auth.isAuthenticated(), controller.destroy);

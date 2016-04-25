@@ -27,8 +27,7 @@ var twitterClient = new Twitter({
   access_token_secret: 'E88aQcJkPLtgpVFEFitOtGA37u5oMm5SgLD3lHM0qZfRo'
 });
 
-var weiboAccessToekn;
-
+Weibo.init(weiboSetting);
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -143,7 +142,7 @@ export function getTweet(req, res, next) {
 //Gets weibo
 export function getWeibo(req, res, next) {
   // 2.00qjRJUB0XENDz1091a55011oViX1E
-  Weibo.init(weiboSetting);
+  // Weibo.init(weiboSetting);
   //
   // Weibo.authorize();
   // var jsonParas = {
@@ -292,7 +291,7 @@ exports.unstar = function (req, res) {
 };
 
 //postTweet
-export function postTweet(req, res) {
+export function postTweet(req, res, next) {
   // console.log(req);
   //post tweet
   twitterClient.post('statuses/update', {
@@ -302,6 +301,26 @@ export function postTweet(req, res) {
       return handleError(res)(error).then(res.end());
     }
   });
-  return getTweet(req, res);
+  // return getTweet(req, res)
+  next();
 
+}
+
+export function postWeibo(req, res, next) {
+
+  var para = {
+    "source": Weibo.appKey.appKey,
+    "status": req.body.name
+  };
+
+  Weibo.Statuses.update(para, function (data) {
+    var newWeibo = new Thing();
+    newWeibo.timeline = data.text;
+    //   newTweet.createdAt = tweet.created_at;
+    newWeibo.timeline.timelineType = 'Sina Weibo';
+    newWeibo.timeline.userAvatar = data.user.profile_image_url;
+    newWeibo.save();
+  });
+
+  next();
 }
