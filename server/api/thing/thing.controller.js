@@ -91,7 +91,7 @@ function handleUnauthorized(req, res) {
 }
 
 //check if the tweet is inside the database
-function isFound(tweet) {
+function isFoundTweet(tweet) {
   Thing.findOne({
     'timeline.id_str': tweet.id_str
   }, function (err, exist) {
@@ -104,6 +104,26 @@ function isFound(tweet) {
       newTweet.timeline.timelineType = 'Twitter';
       newTweet.timeline.userAvatar = tweet.user.profile_image_url;
       newTweet.save();
+      return false;
+    }
+  });
+  return false;
+}
+
+//check if the weibo is inside the database
+function isFoundWeibo(weibo) {
+  Thing.findOne({
+    'timeline.id_str': weibo.idstr
+  }, function (err, exist) {
+    if (exist && !err) {
+      return true;
+    } else {
+      var newWeibo = new Thing();
+      newWeibo.timeline = weibo;
+      //   newTweet.createdAt = tweet.created_at;
+      newWeibo.timeline.timelineType = 'Sina Weibo';
+      newWeibo.timeline.userAvatar = weibo.user.profile_image_url;
+      newWeibo.save();
       return false;
     }
   });
@@ -131,7 +151,7 @@ export function getTweet(req, res, next) {
       // });
     } else {
       for (var temp = tweets.length - 1; temp >= 0; --temp) {
-        var flag = isFound(tweets[temp]);
+        var flag = isFoundTweet(tweets[temp]);
       }
     }
   });
@@ -141,23 +161,6 @@ export function getTweet(req, res, next) {
 
 //Gets weibo
 export function getWeibo(req, res, next) {
-  // 2.00qjRJUB0XENDz1091a55011oViX1E
-  // Weibo.init(weiboSetting);
-  //
-  // Weibo.authorize();
-  // var jsonParas = {
-  //   // client_id: weiboSetting.appKey,
-  //   // client_secret: weiboSetting.appSecret,
-  //   code: '31d551d64820e8e83f35ad8e1fdc91fe',
-  //   grant_type: 'authorization_code'
-  // };
-  //
-  // Weibo.OAuth2.access_token(jsonParas, function (data) {
-  //   // weiboSetting.access_token = data.access_token;
-  //   console.log(data);
-  //   console.log(data.access_token);
-  // });
-  // console.log(weiboAccessToekn);
 
   // set parameters
   var para = {
@@ -169,12 +172,7 @@ export function getWeibo(req, res, next) {
   // get public timeline
   Weibo.Statuses.home_timeline(para, function (data) {
     for (var temp = data.statuses.length - 1; temp >= 0; --temp) {
-      var newWeibo = new Thing();
-      newWeibo.timeline = data.statuses[temp];
-      //   newTweet.createdAt = tweet.created_at;
-      newWeibo.timeline.timelineType = 'Sina Weibo';
-      newWeibo.timeline.userAvatar = data.statuses[temp].user.profile_image_url;
-      newWeibo.save();
+      var flag = isFoundWeibo(data.statuses[temp]);
     }
   });
 
