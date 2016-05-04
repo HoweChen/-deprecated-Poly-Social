@@ -11,6 +11,7 @@ var ThingSchema = new mongoose.Schema({
     ref: 'User'
   },
   id_str: String,
+  timeline_created_at: String,
   stars: [{
     type: mongoSchema.ObjectId,
     ref: 'User'

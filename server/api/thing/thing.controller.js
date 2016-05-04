@@ -17,6 +17,7 @@ var fs = require('fs');
 var Twitter = require('twitter');
 var Weibo = require('nodeweibo');
 var weiboSetting = require('../../auth/weibo/weiboSetting.json');
+var momentTimezone = require('moment-timezone');
 
 
 //set up the user's twitter token and token secret
@@ -104,6 +105,8 @@ function isFoundTweet(tweet) {
       //   newTweet.createdAt = tweet.created_at;
       newTweet.timeline.timelineType = 'Twitter';
       newTweet.timeline.userAvatar = tweet.user.profile_image_url;
+      newTweet.timeline_created_at = momentTimezone(tweet.created_at).tz("Asia/Shanghai").format('YYYY/MM/DD hh:mm:ss');
+      newTweet.timeline.created_at = momentTimezone(tweet.created_at).tz("Asia/Shanghai")._d.toString();
       newTweet.save();
       return false;
     }
@@ -125,11 +128,22 @@ function isFoundWeibo(weibo) {
       //   newTweet.createdAt = tweet.created_at;
       newWeibo.timeline.timelineType = 'Sina Weibo';
       newWeibo.timeline.userAvatar = weibo.user.profile_image_url;
+      newWeibo.timeline_created_at = momentTimezone(weibo.created_at).tz("Asia/Shanghai").format('YYYY/MM/DD hh:mm:ss');
+      newWeibo.timeline.created_at = momentTimezone(weibo.created_at).tz("Asia/Shanghai")._d.toString();
       newWeibo.save();
       return false;
     }
   });
   return false;
+}
+
+function toObj(str) {
+  const a = str.split(/[,\s]+/);
+  return a.reduce((p, c) => {
+    const kv = c.replace(/'/g, '').split('=');
+    p[kv[0]] = kv[1];
+    return p;
+  }, {});
 }
 
 
@@ -190,30 +204,289 @@ export function getWeibo(req, res, next) {
 
 export function indexKeyword(req, res) {
   var keyword = decodeURIComponent(req.query.keyword);
-  return Thing.find({
-      $or: [{
-        'timeline.user.name': {
-          $regex: keyword,
-          $options: 'i'
+  // console.log(keyword.indexOf('USER'));
+  if (keyword.indexOf('USER') !== -1 || keyword.indexOf('TEXT') !== -1 || keyword.indexOf('MODE') !== -1 || keyword.indexOf('TYPE') !== -1) {
+    //enter the advanced searching model
+    var keywordObj = toObj(keyword);
+    // keywordObj is an object now
+    console.log(keywordObj);
+    if (keywordObj.TYPE) {
+      if (keywordObj.TYPE === 'Sina Weibo' || keywordObj.TYPE === 'SinaWeibo' || keywordObj.TYPE === 'sinaweibo' || keywordObj.TYPE === 'weibo' || keywordObj.TYPE === 'sina weibo') {
+        return Thing.find({
+            'timeline.timelineType': 'Sina Weibo'
+          }).sort({
+            'timeline.created_at': 1
+          }).exec()
+          .then(handleEntityNotFound(res))
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+      }
+      if (keywordObj.TYPE === 'Twitter' || keywordObj.TYPE === 'twitter') {
+        return Thing.find({
+            'timeline.timelineType': 'Twitter'
+          }).sort({
+            'timeline.created_at': 1
+          }).exec()
+          .then(handleEntityNotFound(res))
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+      }
+    }
+    if (keywordObj.MODE) {
+      //keywordObj.MODE exist
+      if (keywordObj.MODE === 'AND') {
+        if (keywordObj.USER && !keywordObj.TEXT) {
+          //with USER only with MODE AND
+          // console.log(keywordObj.USER);
+          return Thing.find({
+              'timeline.user.name': {
+                $regex: keywordObj.USER,
+                $options: 'i'
+              }
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
         }
-      }, {
-        'timeline.text': {
-          $regex: keyword
+        //with TEXT only with MODE AND
+        if (!keywordObj.USER && keywordObj.TEXT) {
+          return Thing.find({
+              'timeline.text': {
+                $regex: keywordObj.TEXT
+              }
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
         }
-      }]
-    }).sort({
-      'timeline.created_at': 1
-    }).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+        //with both USER and TEXT with MODE AND
+        if (keywordObj.USER && keywordObj.TEXT) {
+          return Thing.find({
+              $AND: [{
+                'timeline.user.name': {
+                  $regex: keywordObj.USER,
+                  $options: 'i'
+                }
+              }, {
+                'timeline.text': {
+                  $regex: keywordObj.TEXT
+                }
+              }]
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+      } else if (keywordObj.MODE === 'OR') {
+        if (keywordObj.USER && !keywordObj.TEXT) {
+          //with USER only with MODE OR
+          // console.log(keywordObj.USER);
+          return Thing.find({
+              'timeline.user.name': {
+                $regex: keywordObj.USER,
+                $options: 'i'
+              }
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+        //with TEXT only with MODE OR
+        if (!keywordObj.USER && keywordObj.TEXT) {
+          return Thing.find({
+              'timeline.text': {
+                $regex: keywordObj.TEXT
+              }
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+        //with both USER and TEXT with MODE AND
+        if (keywordObj.USER && keywordObj.TEXT) {
+          return Thing.find({
+              $OR: [{
+                'timeline.user.name': {
+                  $regex: keywordObj.USER,
+                  $options: 'i'
+                }
+              }, {
+                'timeline.text': {
+                  $regex: keywordObj.TEXT
+                }
+              }]
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+      } else if (keywordObj.MODE === 'NOT') {
+        if (keywordObj.USER && !keywordObj.TEXT) {
+          //with USER only with MODE NOT
+          // console.log(keywordObj.USER);
+          return Thing.find({
+              'timeline.user.name': {
+                $NOT: {
+                  $regex: keywordObj.USER,
+                  $options: 'i'
+                }
+              }
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+        //with TEXT only with MODE NOT
+        if (!keywordObj.USER && keywordObj.TEXT) {
+          return Thing.find({
+              'timeline.text': {
+                $NOT: {
+                  $regex: keywordObj.TEXT
+                }
+              }
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+        //with both USER and TEXT with MODE NOT
+        if (keywordObj.USER && keywordObj.TEXT) {
+          return Thing.find({
+              $NOR: [{
+                'timeline.user.name': {
+                  $regex: keywordObj.USER,
+                  $options: 'i'
+                }
+              }, {
+                'timeline.text': {
+                  $regex: keywordObj.TEXT
+                }
+              }]
+            }).sort({
+              'timeline.created_at': 1
+            }).exec()
+            .then(handleEntityNotFound(res))
+            .then(respondWithResult(res))
+            .catch(handleError(res));
+        }
+      } else {
+        // unwanted MODE TEXT
+        // do the index() function
+        return Thing.find().sort({
+            'timeline.created_at': 1
+          }).exec()
+          .then(handleEntityNotFound(res))
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+
+      }
+    } else {
+      //keywordObj.MODE doesn't exist
+      if (keywordObj.USER && !keywordObj.TEXT) {
+        //with USER only without MODE
+        // console.log(keywordObj.USER);
+        return Thing.find({
+            'timeline.user.name': {
+              $regex: keywordObj.USER,
+              $options: 'i'
+            }
+          }).sort({
+            'timeline.created_at': 1
+          }).exec()
+          .then(handleEntityNotFound(res))
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+      }
+      //with TEXT only without MODE
+      if (!keywordObj.USER && keywordObj.TEXT) {
+        return Thing.find({
+            'timeline.text': {
+              $regex: keywordObj.TEXT
+            }
+          }).sort({
+            'timeline.created_at': 1
+          }).exec()
+          .then(handleEntityNotFound(res))
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+      }
+      //with both USER and TEXT without MODE
+      if (keywordObj.USER && keywordObj.TEXT) {
+        return Thing.find({
+            $or: [{
+              'timeline.user.name': {
+                $regex: keywordObj.USER,
+                $options: 'i'
+              }
+            }, {
+              'timeline.text': {
+                $regex: keywordObj.TEXT
+              }
+            }]
+          }).sort({
+            'timeline.created_at': 1
+          }).exec()
+          .then(handleEntityNotFound(res))
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+      }
+    }
+
+  } else {
+    //with no specific advanced searching keyword
+    //system will do the simple search for either users or the timlines
+    return Thing.find({
+        $or: [{
+          'timeline.user.name': {
+            $regex: keyword,
+            $options: 'i'
+          }
+        }, {
+          'timeline.text': {
+            $regex: keyword
+          }
+        }, {
+          'timeline.timelineType': {
+            $regex: keyword,
+            $options: 'i'
+          }
+        }]
+      }).sort({
+        'timeline.created_at': 1
+      }).exec()
+      .then(handleEntityNotFound(res))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+
+
+  }
+
+
+
+
 }
 
 // Gets a list of Things
 export function index(req, res) {
 
   return Thing.find().sort({
-      'timeline.created_at': 1
+      'timeline.created_at': -1
     }).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))

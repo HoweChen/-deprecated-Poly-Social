@@ -1,4 +1,3 @@
-
 <header class="hero-unit" id="banner">
   <div class="container">
     <h1>Poly-Social</h1>
@@ -23,11 +22,13 @@
     <div ng-repeat="thing in $ctrl.awesomeThings" class="tweet">
       <div class="row">
         <h4 class="col-xs-3" style="padding-top: 50px;padding-bottom: 50px">
-          <a ng-if= "thing.timeline.timelineType =='Twitter'" ng-href="http://www.twitter.com/{{thing.timeline.user.screen_name}}" target="_blank">
-            <img src={{thing.timeline.userAvatar}} alt="userAvatar" height="48" width="48"> @{{thing.timeline.user.name}}
+          <a ng-if="thing.timeline.timelineType =='Twitter'" ng-href="http://www.twitter.com/{{thing.timeline.user.screen_name}}" target="_blank">
+            <img src={{thing.timeline.userAvatar}} alt="userAvatar" height="48" width="48">
+            @{{thing.timeline.user.name}}
           </a>
-          <a ng-if= "thing.timeline.timelineType =='Sina Weibo'" ng-href="http://www.weibo.com/{{thing.timeline.user.profile_url}}" target="_blank">
-            <img src={{thing.timeline.userAvatar}} alt="userAvatar" height="48" width="48"> @{{thing.timeline.user.name}}
+          <a ng-if="thing.timeline.timelineType =='Sina Weibo'" ng-href="http://www.weibo.com/{{thing.timeline.user.profile_url}}" target="_blank">
+            <img src={{thing.timeline.userAvatar}} alt="userAvatar" height="48" width="48">
+            @{{thing.timeline.user.name}}
           </a>
         </h4>
         <div class="arrow_box col-xs-9">
@@ -48,7 +49,8 @@
             </a>
             <a ng-if="thing.timeline.timelineType == 'Sina Weibo'" ng-href="http://www.twitter.com/{{thing.timeline.user.screen_name}}/status/{{thing.timeline.id_str}}" target="_blank">{{thing.timeline.timelineType}}
             </a>
-            on {{thing.timeline.created_at}}
+            on
+            {{thing.timeline_created_at}}
           </span>
         </div>
       </div>
