@@ -215,7 +215,7 @@ export function indexKeyword(req, res) {
         return Thing.find({
             'timeline.timelineType': 'Sina Weibo'
           }).sort({
-            'timeline.created_at': 1
+            'timeline.created_at': -1
           }).exec()
           .then(handleEntityNotFound(res))
           .then(respondWithResult(res))
@@ -225,7 +225,7 @@ export function indexKeyword(req, res) {
         return Thing.find({
             'timeline.timelineType': 'Twitter'
           }).sort({
-            'timeline.created_at': 1
+            'timeline.created_at': -1
           }).exec()
           .then(handleEntityNotFound(res))
           .then(respondWithResult(res))
@@ -244,7 +244,7 @@ export function indexKeyword(req, res) {
                 $options: 'i'
               }
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -257,7 +257,7 @@ export function indexKeyword(req, res) {
                 $regex: keywordObj.TEXT
               }
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -277,7 +277,7 @@ export function indexKeyword(req, res) {
                 }
               }]
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -293,7 +293,7 @@ export function indexKeyword(req, res) {
                 $options: 'i'
               }
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -306,7 +306,7 @@ export function indexKeyword(req, res) {
                 $regex: keywordObj.TEXT
               }
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -326,7 +326,7 @@ export function indexKeyword(req, res) {
                 }
               }]
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -344,7 +344,7 @@ export function indexKeyword(req, res) {
                 }
               }
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -359,7 +359,7 @@ export function indexKeyword(req, res) {
                 }
               }
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -379,7 +379,7 @@ export function indexKeyword(req, res) {
                 }
               }]
             }).sort({
-              'timeline.created_at': 1
+              'timeline.created_at': -1
             }).exec()
             .then(handleEntityNotFound(res))
             .then(respondWithResult(res))
@@ -389,7 +389,7 @@ export function indexKeyword(req, res) {
         // unwanted MODE TEXT
         // do the index() function
         return Thing.find().sort({
-            'timeline.created_at': 1
+            'timeline.created_at': -1
           }).exec()
           .then(handleEntityNotFound(res))
           .then(respondWithResult(res))
@@ -420,7 +420,7 @@ export function indexKeyword(req, res) {
               $regex: keywordObj.TEXT
             }
           }).sort({
-            'timeline.created_at': 1
+            'timeline.created_at': -1
           }).exec()
           .then(handleEntityNotFound(res))
           .then(respondWithResult(res))
@@ -440,7 +440,7 @@ export function indexKeyword(req, res) {
               }
             }]
           }).sort({
-            'timeline.created_at': 1
+            'timeline.created_at': -1
           }).exec()
           .then(handleEntityNotFound(res))
           .then(respondWithResult(res))
@@ -468,7 +468,7 @@ export function indexKeyword(req, res) {
           }
         }]
       }).sort({
-        'timeline.created_at': 1
+        'timeline.created_at': -1
       }).exec()
       .then(handleEntityNotFound(res))
       .then(respondWithResult(res))
