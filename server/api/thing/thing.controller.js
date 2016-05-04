@@ -580,6 +580,7 @@ export function postTweet(req, res, next) {
     if (error) {
       return handleError(res)(error).then(res.end());
     }
+    var flag = isFoundTweet(tweet);
   });
   // return getTweet(req, res)
   next();
@@ -594,11 +595,14 @@ export function postWeibo(req, res, next) {
   };
 
   Weibo.Statuses.update(para, function (data) {
+    // console.log(data.user);
     var newWeibo = new Thing();
     newWeibo.timeline = data;
     //   newTweet.createdAt = tweet.created_at;
     newWeibo.timeline.timelineType = 'Sina Weibo';
     newWeibo.timeline.userAvatar = data.user.profile_image_url;
+    newWeibo.timeline_created_at = momentTimezone(data.created_at).tz("Asia/Shanghai").format('YYYY/MM/DD hh:mm:ss');
+    newWeibo.timeline.created_at = momentTimezone(data.created_at).tz("Asia/Shanghai")._d.toString();
     newWeibo.save();
   });
 
