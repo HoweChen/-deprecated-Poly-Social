@@ -93,13 +93,14 @@ function handleUnauthorized(req, res) {
 //check if the tweet is inside the database
 function isFoundTweet(tweet) {
   Thing.findOne({
-    'timeline.id_str': tweet.id_str
+    'id_str': tweet.id_str
   }, function (err, exist) {
     if (exist && !err) {
       return true;
     } else {
       var newTweet = new Thing();
       newTweet.timeline = tweet;
+      newTweet.id_str = tweet.id_str;
       //   newTweet.createdAt = tweet.created_at;
       newTweet.timeline.timelineType = 'Twitter';
       newTweet.timeline.userAvatar = tweet.user.profile_image_url;
@@ -113,13 +114,14 @@ function isFoundTweet(tweet) {
 //check if the weibo is inside the database
 function isFoundWeibo(weibo) {
   Thing.findOne({
-    'timeline.id_str': weibo.idstr
+    'id_str': weibo.idstr
   }, function (err, exist) {
     if (exist && !err) {
       return true;
     } else {
       var newWeibo = new Thing();
       newWeibo.timeline = weibo;
+      newWeibo.id_str = weibo.idstr;
       //   newTweet.createdAt = tweet.created_at;
       newWeibo.timeline.timelineType = 'Sina Weibo';
       newWeibo.timeline.userAvatar = weibo.user.profile_image_url;
