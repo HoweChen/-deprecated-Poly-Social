@@ -11,7 +11,7 @@ router.get('/search', controller.indexKeyword);
 // router.get('/', controller.getWeibo);
 // router.get('/api/things/?keyword', auth.isAuthenticated(), controller.indexKeyword);
 // router.get('/:id', controller.show);
-router.post('/', auth.isAuthenticated(), controller.postTweet, controller.postWeibo, controller.index);
+router.post('/', auth.isAuthenticated(), controller.postTweet, controller.index);
 // router.put('/:id', controller.update);
 // router.patch('/:id', controller.update);
 // router.delete('/:id', auth.isAuthenticated(), controller.destroy);
