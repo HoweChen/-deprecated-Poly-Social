@@ -13,6 +13,15 @@ angular.module('polySocialApp')
           }
         }
       })
+      .state('search', {
+        url: '/search/?keyword',
+        template: '<main></main>'
+          // resolve: {
+          //   query: function () {
+          //     return null;
+          //   }
+          // }
+      })
       .state('favourite', {
         url: '/users/:userID/favourite?keyword',
         template: '<main></main>',

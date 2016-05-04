@@ -17,7 +17,7 @@
 
       //send get request with keyword
       if (keyword !== undefined) {
-        this.$http.get('/api/things', {
+        this.$http.get('/api/things/search/', {
           params: {
             keyword: keyword
           }
@@ -27,7 +27,7 @@
         });
       } else {
         //send the nomal get request
-        this.$http.get('/api/things').then(response => {
+        this.$http.get('/api/things/').then(response => {
           this.awesomeThings = response.data;
           this.socket.syncUpdates('thing', this.awesomeThings);
         });

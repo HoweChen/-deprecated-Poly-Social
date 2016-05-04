@@ -7,6 +7,7 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/', auth.isAuthenticated(), controller.getTweet, controller.getWeibo, controller.index);
+router.get('/search', controller.indexKeyword);
 // router.get('/', controller.getWeibo);
 // router.get('/api/things/?keyword', auth.isAuthenticated(), controller.indexKeyword);
 // router.get('/:id', controller.show);

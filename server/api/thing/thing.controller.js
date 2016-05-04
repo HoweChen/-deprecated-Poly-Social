@@ -186,12 +186,8 @@ export function getWeibo(req, res, next) {
   next();
 }
 
-// Gets a list of Things
-export function index(req, res) {
-
+export function indexKeyword(req, res) {
   var keyword = decodeURIComponent(req.query.keyword);
-  // console.log(keyword);
-
   return Thing.find({
       $or: [{
         'timeline.user.name': {
@@ -204,6 +200,17 @@ export function index(req, res) {
         }
       }]
     }).sort({
+      'timeline.created_at': 1
+    }).exec()
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+// Gets a list of Things
+export function index(req, res) {
+
+  return Thing.find().sort({
       'timeline.created_at': 1
     }).exec()
     .then(handleEntityNotFound(res))

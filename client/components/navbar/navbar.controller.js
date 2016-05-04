@@ -3,18 +3,15 @@
 class NavbarController {
   //start-non-standard
   menu = [{
-      'title': 'Home',
-      'state': 'main'
-    },
-    {
-      'title': 'Mine',
-      'state': 'mine'
-    },
-    {
-      'title': 'Favourite',
-      'state': 'favourite'
-    }
-  ];
+    'title': 'Home',
+    'state': 'main'
+  }, {
+    'title': 'Mine',
+    'state': 'mine'
+  }, {
+    'title': 'Favourite',
+    'state': 'favourite'
+  }];
 
   isCollapsed = true;
   //end-non-standard
@@ -31,11 +28,17 @@ class NavbarController {
     $scope.search = function (keyword) {
       var keywordTemp = encodeURIComponent(keyword);
       // console.log(keywordTemp);
-      $state.go('main', {
-        keyword: keywordTemp
-      }, {
-        reload: true
-      });
+      if (keyword) {
+        $state.go('search', {
+          keyword: keywordTemp
+        }, {
+          reload: true
+        });
+      } else {
+        $state.go('main', {
+          reload: true
+        });
+      }
     };
   }
 }
