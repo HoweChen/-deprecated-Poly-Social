@@ -232,6 +232,7 @@ export function indexKeyword(req, res) {
           .catch(handleError(res));
       }
     }
+
     if (keywordObj.MODE) {
       //keywordObj.MODE exist
       if (keywordObj.MODE === 'AND') {
@@ -266,7 +267,7 @@ export function indexKeyword(req, res) {
         //with both USER and TEXT with MODE AND
         if (keywordObj.USER && keywordObj.TEXT) {
           return Thing.find({
-              $AND: [{
+              $and: [{
                 'timeline.user.name': {
                   $regex: keywordObj.USER,
                   $options: 'i'
