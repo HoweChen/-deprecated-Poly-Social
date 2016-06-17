@@ -19,7 +19,6 @@ var Weibo = require('nodeweibo');
 var weiboSetting = require('../../auth/weibo/weiboSetting.json');
 var momentTimezone = require('moment-timezone');
 
-
 //set up the user's twitter token and token secret
 var twitterClient = new Twitter({
   consumer_key: 'YWhfVLPloADYwOMH0EebIJZW6',
