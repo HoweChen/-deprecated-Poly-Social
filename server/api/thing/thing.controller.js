@@ -113,6 +113,7 @@ function isFoundTweet(tweet) {
   return false;
 }
 
+
 //check if the weibo is inside the database
 function isFoundWeibo(weibo) {
   Thing.findOne({
